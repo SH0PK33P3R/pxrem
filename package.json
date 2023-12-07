@@ -5,11 +5,14 @@
   "author": "Dylan C",
   "license": "MIT",
   "scripts": {
-    "build": "tsc && chmod +x pxrem.js && mv pxrem.js pxrem"
+    "build": "tsc && pkg pxrem.js --targets=node16 --output pxrem && rm pxrem.js"
   },
   "devDependencies": {
     "@types/node": "^20.10.2",
+    "pkg": "^5.8.1",
     "typescript": "^5.3.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "commander": "^11.1.0"
+  }
 }

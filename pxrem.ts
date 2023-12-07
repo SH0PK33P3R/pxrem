@@ -1,47 +1,37 @@
 #!/bin/node
-const args: string[] = process.argv.slice(2);
+import { program } from "commander";
 
-enum OperationType {
-  DIVIDE,
-  MULTIPLY,
+enum Operation {
+  "DIVIDE",
+  "MULTIPLY",
 }
 
-let operation: OperationType = OperationType.DIVIDE;
-let base = 16;
+type Options = {
+  reverse: boolean;
+  base: number;
+};
 
-const numbers: number[] = args.reduce<number[]>((acc, argument) => {
-  if (argument === "-r") {
-    operation = OperationType.MULTIPLY;
-    return acc;
+program
+  .option("-r, --reverse", "Reverse to convert rem values to px", false)
+  .option("-b, --base <base>", "Change the base value", "16")
+  .argument("number(s)")
+  .parse();
+
+const args = program.args;
+const options = program.opts<Options>();
+const operation: Operation = options.reverse
+  ? Operation.MULTIPLY
+  : Operation.DIVIDE;
+
+args.forEach((argument) => {
+  const number = Number(argument);
+
+  if (operation === Operation.DIVIDE) {
+    console.log(`${number}px : ${number / options.base}rem`);
+    return;
   }
-
-  if (argument.startsWith("-b=")) {
-    base = Number(argument.split("=")[1]);
-    return acc;
-  }
-
-  if (isNaN(Number(argument))) {
-    return acc;
-  }
-
-  return [...acc, Number(argument)];
-}, []);
-
-if (numbers.length === 0) {
-  console.error(
-    "pxrem: missing argument. Please provide a number.\nExample: 'pxrem 1'"
-  );
-}
-
-numbers.forEach((number) => {
-  switch (operation) {
-    case OperationType.DIVIDE: {
-      console.log(`${number}px : ${number / base}rem`);
-      return;
-    }
-    case OperationType.MULTIPLY: {
-      console.log(`${number}rem : ${number * base}px`);
-      return;
-    }
+  if (operation === Operation.MULTIPLY) {
+    console.log(`${number}rem : ${number * options.base}px`);
+    return;
   }
 });

@@ -30,7 +30,7 @@ pxrem 1 2 3
 Changing the base value (`16` by default)
 
 ```bash
-pxrem -b=10 1 2 3
+pxrem -b 10 1 2 3
 # 1px : 0.1rem
 # 2px : 0.2rem
 # 3px : 0.3rem
